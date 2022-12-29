@@ -1,0 +1,24 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+
+  mongodb-primary:
+    image: bitnami/mongodb
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=localhost
+      - MONGODB_USERNAME=usedeall
+      - MONGODB_PASSWORD=secret
+      - MONGODB_DATABASE=usedeall_db
+      - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_ROOT_PASSWORD=usedeall_root
+      - MONGODB_REPLICA_SET_KEY=replicasetkey123
+      - MONGODB_REPLICA_SET_NAME=rs1
+    volumes:
+      - mongodb_data:/bitnami/mongodb
+
+volumes:
+  mongodb_data:
