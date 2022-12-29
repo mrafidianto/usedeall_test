@@ -127,11 +127,9 @@ function createRefreshToken(userId, refreshTokenId){
 }
 
 const verifyPassword = async (hashedPassword, rawPassword) => {
-  let checkPassword = await argon2.verify(hashedPassword, rawPassword);
+  let isPasswordMatch = await argon2.verify(hashedPassword, rawPassword);
   
-  if (checkPassword) {
-
-  } else {
+  if (!isPasswordMatch) {
     throw new HttpError(401, "Wrong username or password");
   }
 }
@@ -142,7 +140,7 @@ const validateRefreshToken = async (token) => {
     try {
       return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
     } catch (e) {
-      throw new HttpError(401, "Unauthorized")
+      throw new HttpError(401, "Unauthorized");
     }
   }
 
