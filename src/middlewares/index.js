@@ -1,5 +1,6 @@
 const { HttpError } = require("../error");
 const { errorHandler } = require("../util");
+const models = require("../models");
 const jwt = require("jsonwebtoken");
 
 
@@ -21,4 +22,18 @@ const verifyAccessToken = errorHandler((req, res, next) => {
   }
 })
 
-module.exports = {verifyAccessToken}
+const verifyAdminRole = errorHandler((req, res, next) => {
+  const userDoc = models.User.findById(req.userId).exec();
+
+  if(!userDoc){
+    throw new HttpError(401, "Unauthorized");
+  }
+
+  if(userDoc.is_admin) {
+    throw new HttpError(401, "You are not unauthorized as admin!");
+  }
+  next();
+});
+
+
+module.exports = {verifyAccessToken, verifyAdminRole}
