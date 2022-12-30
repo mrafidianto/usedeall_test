@@ -51,7 +51,7 @@ const login = errorHandler(withTransaction(async(req, res, session) => {
 
   await refreshTokenDoc.save({session});
 
-  const refreshToken =  createRefreshToken(userDoc.id, refreshTokenDoc.id);
+  const refreshToken = createRefreshToken(userDoc.id, refreshTokenDoc.id);
   const accessToken = await createAccessToken(userDoc.id);
 
   return {
