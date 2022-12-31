@@ -1,4 +1,7 @@
 const mongoose = require("mongoose");
+const argon2 = require("argon2");
+const models = require("../models");
+const logger = require("../logger");
 
 function errorHandler(fn) {
   return async function(req, res, next) {
@@ -31,7 +34,27 @@ function withTransaction(fn) {
   
 }
 
+async function initiateAdmin() {
+  const admin = await models.User.findOne({username: "admin", is_admin: true}).exec();
+
+  if (!admin) {
+    const userDoc = models.User({
+      username: "admin",
+      password: await argon2.hash("admin"),
+      is_admin: true,
+      country: "indonesia",
+      city: "surabaya"
+    });
+
+    await userDoc.save();
+    logger.info("admin is created successfully!")
+  } else {
+    logger.info("admin is already create");
+  }
+}
+
 module.exports = {
   errorHandler,
-  withTransaction
+  withTransaction,
+  initiateAdmin
 }
