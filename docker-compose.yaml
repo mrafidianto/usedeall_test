@@ -1,15 +1,16 @@
-# Use root/example as user/password credentials
 version: '3.1'
 
-services:
+networks:
+  app-tier:
+    driver: bridge
 
-  mongodb-primary:
+services:
+  mongodb:
     image: bitnami/mongodb
-    restart: always
     ports:
       - 27017:27017
     environment:
-      - MONGODB_ADVERTISED_HOSTNAME=localhost
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb
       - MONGODB_USERNAME=usedeall
       - MONGODB_PASSWORD=secret
       - MONGODB_DATABASE=usedeall_db
@@ -17,8 +18,30 @@ services:
       - MONGODB_ROOT_PASSWORD=usedeall_root
       - MONGODB_REPLICA_SET_KEY=replicasetkey123
       - MONGODB_REPLICA_SET_NAME=rs1
+      - MONGODB_BIND_IP=0.0.0.0
     volumes:
       - mongodb_data:/bitnami/mongodb
+    networks:
+      - app-tier
+
+  usedeall-app:
+    image: rafidianto/usedeall-test
+    depends_on:
+      - mongodb
+    ports:
+      - 3001:3000
+    environment:
+      - LOG_LEVEL=debug
+      - DB_USER=usedeall
+      - DB_PASS=secret
+      - DB_HOST=mongodb
+      - DB_PORT=27017
+      - DB_NAME=usedeall_db
+      - DB_REPLICA_SET=rs1
+      - ACCESS_TOKEN_SECRET=123
+      - REFRESH_TOKEN_SECRET=123
+    networks:
+      - app-tier
 
 volumes:
   mongodb_data:
