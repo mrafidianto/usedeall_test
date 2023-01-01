@@ -9,9 +9,8 @@ async function connectToDatabase() {
     const host = process.env.DB_HOST;
     const port = process.env.DB_PORT;
     const dbName = process.env.DB_NAME;
-    const rs = process.env.DB_REPLICA_SET;
 
-    const connectionString = `mongodb://${user}:${password}@${host}:${port}/${dbName}?replicaSet=${rs}`;
+    const connectionString = `mongodb://${user}:${password}@${host}:${port}/${dbName}`;
     await mongoose.connect(connectionString, {
         serverSelectionTimeoutMS: 5000
     });
