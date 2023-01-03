@@ -39,6 +39,24 @@ const create = errorHandler(async (req, res) => {
 
 });
 
+const getAll = errorHandler(async (req, res) => {
+  try {
+    const userDocs = await models.User.find({"is_admin":false});
+    
+    if(userDocs.length == 0) {
+      throw new HttpError(404, "Users not found!");
+    }
+
+    return userDocs;
+  } catch(e) {
+    if (e.name === "CustomHttpError") {
+      throw new HttpError(e.statusCode, e.message);
+    } else {
+      throw new HttpError(500, e.message);
+    }
+  }
+})
+
 const get = errorHandler(async (req, res) => {
   const userId = req.params.userId
 
@@ -121,4 +139,4 @@ const remove = errorHandler(async (req, res) => {
   
 });
 
-module.exports = {me, create, update, remove, get}
+module.exports = {me, create, update, remove, get, getAll}
