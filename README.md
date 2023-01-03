@@ -5,6 +5,6 @@ This is repository for usedeall backend engineer test
 user: admin<br>
 pass: admin
 
-## port used:
+## port used to access endpoint:
 dev env use: localhost:3000
 k8s env use: localhost:80
