@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: usedeall-app
+  name: usedeall-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: usedeall-app
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: usedeall-app
+    spec:
+      containers:
+        - env:
+            - name: ACCESS_TOKEN_SECRET
+              value: "123"
+            - name: DB_HOST
+              value: mongodb
+            - name: DB_NAME
+              value: usedeall_db
+            - name: DB_PASS
+              value: secret
+            - name: DB_PORT
+              value: "27017"
+            - name: DB_REPLICA_SET
+              value: rs1
+            - name: DB_USER
+              value: usedeall
+            - name: LOG_LEVEL
+              value: debug
+            - name: REFRESH_TOKEN_SECRET
+              value: "123"
+          image: rafidianto/usedeall-test
+          name: usedeall-app
+          ports:
+            - containerPort: 3000
+          resources: {}
+      restartPolicy: Always
+status: {}

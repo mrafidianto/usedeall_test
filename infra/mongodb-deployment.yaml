@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mongodb
+  name: mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: mongodb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mongodb
+    spec:
+      initContainers:
+      - name: set-permissions
+        image: busybox
+        command: ['sh', '-c', 'mkdir -p /bitnami/mongodb/data && chown -R 1001:1001 /bitnami/mongodb/data']
+        securityContext:
+          privileged: true
+        volumeMounts:
+          - mountPath: /bitnami/mongodb
+            name: mongodb-data
+      containers:
+        - env:
+            - name: MONGODB_ADVERTISED_HOSTNAME
+              value: mongodb
+            - name: MONGODB_DATABASE
+              value: usedeall_db
+            - name: MONGODB_PASSWORD
+              value: secret
+            - name: MONGODB_REPLICA_SET_KEY
+              value: replicasetkey123
+            - name: MONGODB_REPLICA_SET_MODE
+              value: primary
+            - name: MONGODB_REPLICA_SET_NAME
+              value: rs0
+            - name: MONGODB_ROOT_PASSWORD
+              value: usedeall_root
+            - name: MONGODB_USERNAME
+              value: usedeall
+          image: bitnami/mongodb:latest
+          name: mongodb
+          ports:
+            - containerPort: 27017
+          resources: {}
+          volumeMounts:
+            - mountPath: /bitnami/mongodb
+              name: mongodb-data
+      restartPolicy: Always
+      volumes:
+        - name: mongodb-data
+          persistentVolumeClaim:
+            claimName: mongodb-data
+status: {}
