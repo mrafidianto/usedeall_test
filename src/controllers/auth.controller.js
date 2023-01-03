@@ -84,7 +84,7 @@ const newRefreshToken = errorHandler(withTransaction(async (req, res, session) =
 const newAccessToken = errorHandler(async (req, res) => {
   
   const currentRefreshToken = await validateRefreshToken(req.body.refreshToken);
-  const accessToken = createAccessToken(refreshToken.userId);
+  const accessToken = createAccessToken(currentRefreshToken.userId);
 
   return {
     id: currentRefreshToken.userId,
